@@ -98,7 +98,7 @@ async function initOwnersAsync({ flatId }) {
 }
 async function initCountersAsync() {
     const { data, error } = await fetchCounters();
-    if (data) {
+	if (data) {
         const counters = createExcels(data);
         ALL_EXCELS = counters;
     }
@@ -211,14 +211,14 @@ async function startAsync() {
 
     await initCountersAsync();
     renderCountersList({ counters: ALL_EXCELS })
-
     const activeExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
     if (activeExcelId) {
 
         await loadAndRenderOwnersAndCreateSwiperAsync({ flatId: activeExcelId });
     }
     else {
-        NAV_EL.classList.add('visible');
+		NAV_EL.classList.add('visible');
+		PRELOADER_EL.classList.add('preloader-remove')
     }
 
     document.addEventListener("keyup", (e) => {
