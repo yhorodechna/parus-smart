@@ -8,7 +8,6 @@ const NAV_LIST_EL = document.querySelector('#navList');
 const EXCEL_INFO_EL = document.querySelector("#counter__type");
 const PRELOADER_EL = document.querySelector('#preloader');
 
-
 function createOwners(data) {
     const res = data.map((owner) => ({
         id: `id_${owner.excelRowNumber}`,
@@ -121,19 +120,25 @@ function getOwnerItemHtml({ id, flatId, fullName, flatSpace, personalNumber, cou
                 <div class="owner__content">
                     <div class='owner__id'>Квартира №: ${flatId}</div>
                     <article id='owner__counter' class='owner__counter'>
-                        <label for='counter' class='counter__label'>Показ лічильника</label>
+                        <label for='counter' class='counter__label'>#${counterNumber}</label>
                         </br>
-                        <input  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='' autofocus>
+                        <input onkeyup="oninputchange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
                         </br>
                         <button dataid="${flatId}" type='button' class='input__button' onclick='onButtonClick(this)'  >OK</button>
                     </article>
-                    <div class='owner__counterNumber'>Номер лічильника: ${counterNumber}</div>
-                    <div class='owner__previousValue'> Попередній показ лічильника: ${previousValue} </div>
-                    <div class='owner__differenceValue' id='owner__differenceValue'> Різниця показів лічильника: ${differenceCounter} </div>
+ 
+                    <div class='owner__differenceValue' id='owner__differenceValue'> Різниця: ${differenceCounter} </div>
                 </div>
             </div>
         `
+    // <div class='owner__counterNumber'>Номер лічильника: ${counterNumber}</div>
+    // <div class='owner__previousValue'> Попередній показ лічильника: ${previousValue} </div>
     return ownersItemHtml
+}
+function oninputchange(el) {
+    const prev = parseFloat(el.getAttribute("placeholder"), 10) || 0;
+    const diffEl = el.closest('.owner__content').querySelector('.owner__differenceValue');
+    diffEl.innerHTML = 'Різниця: ' +Math.floor(parseFloat(el.value, 10) - prev);
 }
 function getCountersListHtml({ id, name, counterType, tariffType, houseName, }) {
     const ownersItemHtml =
@@ -168,14 +173,6 @@ function renderCountersList({ counters }) {
 
 
 
-function onInputUp(target, e, id) {
-    alert(e.key)
-    if (e.which === 9 || e.key === 'Enter' || e.keyCode === 13) {
-        // Do something
-        alert(2)
-        onButtonClick(target, e, id);
-    }
-}
 function onButtonClick(target) {
     const flatId = target.getAttribute('dataid')
     const ownerContentEl = target.closest('.owner__content');
@@ -183,7 +180,7 @@ function onButtonClick(target) {
     const currentInputEl = ownerContentEl.querySelector(`#owner__${currentOwner.id}`)
     axios.post(`http://api.parus-smart.site/api/private/gtable/${localStorage.getItem('ACTIVE_EXCEL_ID')}/set_value`, {
         month: "october",
-        excelRowIndex: `${currentOwner.excelRowNumber}`,
+        personalNumber: `${currentOwner.personalNumber}`,
         value: currentInputEl.value,
         tabName: "Аркуш1",
     })
@@ -201,7 +198,6 @@ function onButtonClick(target) {
 
             setTimeout(() => {
                 SWIPER.slideNext(600);
-
             }, [200])
         })
         .catch(function (error) {
@@ -254,32 +250,35 @@ function onHeaderButtonClick({ target }) {
 
 
 async function handleNavLinkClick({ target }) {
-    PRELOADER_EL.classList.remove('preloader-hide');
-    PRELOADER_EL.classList.remove('preloader-remove')
-    PRELOADER_EL.classList.add('preloader-show');
-    // PRELOADER_EL.classList.add('preloader-hide');
-    // setTimeout(() => { PRELOADER_EL.classList.add('preloader-remove') }, 1000)
-
-    const prevExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
-    const prevLinkEl = document.getElementById(`nav__link${prevExcelId}`)
-    if (prevLinkEl) {
-        prevLinkEl.parentNode.classList.remove('active');
-    }
-
     let activeNavLinkEl = target.closest('.nav__link');
-    const flatId = activeNavLinkEl.getAttribute('dataid')
-    localStorage.setItem('ACTIVE_EXCEL_ID', flatId)
+    if (activeNavLinkEl) {
+        NAV_EL.classList.remove('visible');
+        HEADER_BUTTON_EL.classList.remove('open')
+        // PRELOADER_EL.classList.remove('preloader-hide');
+        // PRELOADER_EL.classList.remove('preloader-remove')
+        // PRELOADER_EL.classList.add('preloader-show');
+        // PRELOADER_EL.classList.add('preloader-hide');
+        // setTimeout(() => { PRELOADER_EL.classList.add('preloader-remove') }, 1000)
+
+        const prevExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
+        const prevLinkEl = document.getElementById(`nav__link${prevExcelId}`)
+        if (prevLinkEl) {
+            prevLinkEl.parentNode.classList.remove('active');
+        }
 
 
-    await loadAndRenderOwnersAndCreateSwiperAsync({ flatId });
+        const flatId = activeNavLinkEl.getAttribute('dataid')
+        localStorage.setItem('ACTIVE_EXCEL_ID', flatId)
 
-    NAV_EL.classList.remove('visible');
-    HEADER_BUTTON_EL.classList.remove('open')
+
+        await loadAndRenderOwnersAndCreateSwiperAsync({ flatId });
+
+
+    }
 };
 
 async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
-    setTimeout(() => { PRELOADER_EL.classList.add('preloader-remove') }, 1000)
-
+    PRELOADER_EL.classList.remove('preloader-remove')
     console.log('render')
     console.log('initial state', Number(localStorage.getItem("CURRENT_SLIDE")))
     const activeNavEl = document.getElementById(`nav__link${flatId}`);
@@ -313,7 +312,6 @@ async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
         initialSlide: localStorage.getItem("CURRENT_SLIDE") ? Number(localStorage.getItem("CURRENT_SLIDE")) : 0,
         on: {
             slideChangeTransitionEnd: function (e) {
-                console.log('next', e)
                 if (ALL_EXCELS.length && ALL_OWNERS.length) {
                     localStorage.setItem("CURRENT_SLIDE", e.activeIndex.toString())
                 }
@@ -322,16 +320,7 @@ async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
             }
         }
     })
-    setTimeout(() => {
-        PRELOADER_EL.classList.remove('preloader-show');
-        PRELOADER_EL.classList.add('preloader-hide');
-        setTimeout(() => { PRELOADER_EL.classList.add('preloader-remove') }, 1000)
-    }, 500)
-
-
-
-
-
+    PRELOADER_EL.classList.add('preloader-remove')
 }
 
 
