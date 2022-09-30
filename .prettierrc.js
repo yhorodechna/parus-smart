@@ -5,5 +5,6 @@ module.exports = {
     bracketSpacing: true,
     printWidth: 125,
     tabWidth: 4,
-    arrowParens: 'always',
+    arrowParens: 'always'
 };
+
