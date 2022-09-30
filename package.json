@@ -1,0 +1,42 @@
+{
+  "name": "parus-smart-html",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"lint-fix": "eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
+	"prettier-fix": "npm run prettier -- --write",
+	"validate": "yarn lint && yarn test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yhorodechna/parus-smart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yhorodechna/parus-smart/issues"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,json}": [
+      "npm run lint-fix",
+      "npm run prettier-fix",
+      "git add"
+    ]
+  },
+  "homepage": "https://github.com/yhorodechna/parus-smart#readme",
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+	"prettier": "2.3.2",
+	"prettier-plugin-organize-imports": "^1.1.1",
+	"eslint-plugin-prettier": "^3.4.0",
+	"eslint-config-prettier": "^6.15.0"
+  },
+  "dependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3"
+  }
+}
