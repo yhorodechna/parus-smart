@@ -182,7 +182,7 @@ function onButtonClick(target) {
         month: "october",
         personalNumber: `${currentOwner.personalNumber}`,
         value: currentInputEl.value,
-        tabName: "Аркуш1",
+        tabName: "Аркуш2",
     })
         .then(function (response) {
             currentOwner.currentValue = +currentInputEl.value;
