@@ -27,7 +27,7 @@ function createOwners(data) {
 }
 function createExcels(data) {
     const res = data.data.map((excel) => ({
-        id: excel.id,
+        id: `${excel.id}`,
         name: excel.name,
         counterType: excel.counterType,
         tariffType: excel.tariffType,
@@ -115,13 +115,13 @@ function getOwnerItemHtml({ id, flatId, counterNumber, previousValue, currentVal
     }
     const ownersItemHtml = `
             <div class="swiper-slide">
-                <div class="owner__content">
+                <div class='owner__content ${currentValue ? 'correct' : ''}'>
                     <div class='owner__id'>Квартира №: ${flatId}</div>
                     <article id='owner__counter' class='owner__counter'>
                         
                         <label for='counter' class='counter__label'>#${counterNumber}</label>
                         </br>
-                        <input onkeyup="oninputchange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
+                        <input onkeyup="onInputChange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
                         </br>
                         <button dataid="${flatId}" type='button' class='input__button' onclick='onButtonClick(this)'  >OK</button>
                     </article>
@@ -134,8 +134,7 @@ function getOwnerItemHtml({ id, flatId, counterNumber, previousValue, currentVal
     // <div class='owner__previousValue'> Попередній показ лічильника: ${previousValue} </div>
     return ownersItemHtml;
 }
-// eslint-disable-next-line no-unused-vars
-function oninputchange(el) {
+function onInputChange(el) {
     const prev = parseFloat(el.getAttribute('placeholder'), 10) || 0;
     const diffEl = el.closest('.owner__content').querySelector('.owner__differenceValue');
     diffEl.innerHTML = `Різниця: ${Math.floor(parseFloat(el.value, 10) - prev)}`;
