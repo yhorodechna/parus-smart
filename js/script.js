@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 let ALL_OWNERS = [];
 let ALL_EXCELS = [];
 
@@ -276,7 +275,7 @@ async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
 	const activeNavEl = document.getElementById(`nav__link${ flatId }`);
 	activeNavEl.parentNode.classList.add('active');
 
-	const activeExcel = ALL_EXCELS.find((excel) => excel.id == flatId);
+	const activeExcel = ALL_EXCELS.find((excel) => excel.id === flatId);
 	const excelInfoHtml = getExcelInfoHtml(activeExcel);
 	EXCEL_INFO_EL.innerHTML = excelInfoHtml;
 

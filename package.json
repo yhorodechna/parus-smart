@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-	"lint-fix": "eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
+    "test": "echo \"write some test\" && exit 0",
+	"lint": "eslint \"js/**/*.{js,ts,tsx}\"",
+	"lint-fix": "eslint \"js/**/*.{js,ts,tsx}\" --quiet --fix",
 	"prettier-fix": "npm run prettier -- --write",
 	"validate": "yarn lint && yarn test"
   },

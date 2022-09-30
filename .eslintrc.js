@@ -12,7 +12,8 @@ module.exports = {
 	},
 	rules: {
 		'no-tabs': ['off'],
-		'indent': ['off'],
+		indent: ['off'],
+		'no-console': ['off'],
 		'template-curly-spacing': ['off'],
 	},
 };
