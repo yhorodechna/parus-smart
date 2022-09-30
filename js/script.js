@@ -113,7 +113,6 @@ function getOwnerItemHtml({ id, flatId, counterNumber, previousValue, currentVal
     } else {
         differenceCounter = '-';
     }
-    x = new Date2();
     const ownersItemHtml = `
             <div class="swiper-slide">
                 <div class="owner__content">
@@ -212,7 +211,7 @@ async function startAsync() {
     const activeExcelId = localStorage.getItem('ACTIVE_EXCEL_ID');
     if (activeExcelId) {
         // eslint-disable-next-line no-use-before-define
-        await loadAndRenderOwnersAndCreateSwiperAsync({ flatId: activeExcelId });
+        await loadAndRenderOwnersAndCreateSwiperAsync({ excelId: activeExcelId });
     } else {
         NAV_EL.classList.add('visible');
         PRELOADER_EL.classList.add('preloader-remove');
@@ -260,26 +259,26 @@ async function handleNavLinkClick({ target }) {
             prevLinkEl.parentNode.classList.remove('active');
         }
 
-        const flatId = activeNavLinkEl.getAttribute('dataid');
-        localStorage.setItem('ACTIVE_EXCEL_ID', flatId);
+        const excelId = activeNavLinkEl.getAttribute('dataid');
+        localStorage.setItem('ACTIVE_EXCEL_ID', excelId);
 
         // eslint-disable-next-line no-use-before-define
-        await loadAndRenderOwnersAndCreateSwiperAsync({ flatId });
+        await loadAndRenderOwnersAndCreateSwiperAsync({ excelId: excelId });
     }
 }
 
-async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
+async function loadAndRenderOwnersAndCreateSwiperAsync({ excelId }) {
     PRELOADER_EL.classList.remove('preloader-remove');
     console.log('render');
     console.log('initial state', Number(localStorage.getItem('CURRENT_SLIDE')));
-    const activeNavEl = document.getElementById(`nav__link${flatId}`);
+    const activeNavEl = document.getElementById(`nav__link${excelId}`);
     activeNavEl.parentNode.classList.add('active');
 
-    const activeExcel = ALL_EXCELS.find((excel) => excel.id === flatId);
+    const activeExcel = ALL_EXCELS.find((excel) => excel.id === excelId);
     const excelInfoHtml = getExcelInfoHtml(activeExcel);
     EXCEL_INFO_EL.innerHTML = excelInfoHtml;
 
-    await initOwnersAsync({ flatId });
+    await initOwnersAsync({ flatId: excelId });
     renderOwners({ owners: ALL_OWNERS });
 
     if (SWIPER) {
