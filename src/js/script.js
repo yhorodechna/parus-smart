@@ -123,7 +123,7 @@ function getOwnerItemHtml({ id, flatId, counterNumber, previousValue, currentVal
                         </br>
                         <input onkeyup="onInputChange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
                         </br>
-                        <button dataid="${flatId}" type='button' class='input__button' onclick='onButtonClick(this)'  >OK</button>
+                        <button dataid="${flatId}" type='button' class='input__button' style='display:none;' onclick='onButtonClick(this)'  >OK</button>
                     </article>
  
                     <div class='owner__differenceValue' id='owner__differenceValue'> Різниця: ${differenceCounter} </div>

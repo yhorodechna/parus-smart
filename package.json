@@ -2,11 +2,11 @@
     "name": "parus-smart-html",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "src/index.js",
     "scripts": {
-        "lint": "eslint \"js/**/*.{js,ts,tsx}\"",
-        "lint-fix": "eslint \"js/**/*.{js,ts,tsx}\" --quiet --fix",
-        "prettier": "prettier --config ./.prettierrc.js --check \"js/**/*{.ts,.tsx,*.js,*.json.*.babelrc}\"",
+        "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
+        "lint-fix": "eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
+        "prettier": "prettier --config ./.prettierrc.js --check \"src/**/*{.ts,.tsx,*.js,*.json.*.babelrc}\"",
         "prettier-fix": "npm run prettier -- --write",
         "validate": "yarn lint"
     },
