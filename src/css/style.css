@@ -120,7 +120,7 @@ body {
   transform: rotate(-135deg);
   top: 10px;
 }
-.login {
+.login__btn {
   position: absolute;
   right: 4px;
 }
@@ -175,6 +175,66 @@ body {
 .nav__item.active {
   background-color: rgba(54, 118, 33, 0.34);
 }
+
+.login {
+  display: flex;flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  background-color: #fff;
+  right: -100%;
+  transition: all linear 0.3s;
+  z-index: 100;
+}
+.login.open {
+  right: 0;
+  width: 100%;
+  height: 100%;
+  transition: all linear 0.3s;
+}
+.login__title{
+  font-size: 20px;
+  margin: 0px 0px 10px 0px;
+  
+}
+.login__email,
+.login__pass {
+  text-align: center;
+  width: 100%;
+}
+.login__email-text,
+.login__pass-text {
+  font-size: 18px;
+}
+.login__email-input,
+.login__pass-input,
+.login__submit {
+  width: 60%;
+  max-width: 600px;
+  min-width: 180px;
+  height: 30px;
+  box-shadow: 2px 2px 5px #666;
+  text-align: center;
+  font-size: 18px;
+  margin: 4px 0px 10px 0px;
+}
+.login__email-input{
+}
+.login__pass {
+}
+.login__pass-text {
+}
+.login__pass-input {
+}
+.login__submit {
+  background-color: rgba(54, 118, 33, 0.34);
+}
+
+
+
 main {
   height: 100%;
 }
