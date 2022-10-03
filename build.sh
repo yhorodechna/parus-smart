@@ -6,8 +6,8 @@ port=3138
 version=1
 REACT_APP_ENV=local
 
-docker stop $container
 docker image rm $image
-docker rm $container
 docker build -t $image -f Dockerfile .
-docker run --env PORT=80 -d -p $port:80 --name $container $image
+docker stop $container
+docker rm $container
+docker run --restart=always --env PORT=80 -d -p $port:80 --name $container $image
