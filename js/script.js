@@ -211,7 +211,6 @@ async function startAsync() {
 
     await initCountersAsync();
     renderCountersList({ counters: ALL_EXCELS })
-
     const activeExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
     if (activeExcelId) {
 
