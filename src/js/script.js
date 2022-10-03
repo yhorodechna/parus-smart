@@ -206,8 +206,8 @@ function onButtonClick(target) {
 let SWIPER;
 async function startAsync() {
     await initCountersAsync();
-    renderCountersList({ counters: ALL_EXCELS })
-    const activeExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
+    renderCountersList({ counters: ALL_EXCELS });
+    const activeExcelId = localStorage.getItem('ACTIVE_EXCEL_ID');
     if (activeExcelId) {
         // eslint-disable-next-line no-use-before-define
         await loadAndRenderOwnersAndCreateSwiperAsync({ excelId: activeExcelId });
