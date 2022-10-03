@@ -1,11 +1,11 @@
 let ALL_OWNERS = [];
 let ALL_EXCELS = [];
 
-const SWIPER_WRAPPER_EL = document.querySelector("#swiper-wrapper");
+const SWIPER_WRAPPER_EL = document.querySelector('#swiper-wrapper');
 const HEADER_BUTTON_EL = document.querySelector('#header__btn');
 const NAV_EL = document.querySelector('#nav');
 const NAV_LIST_EL = document.querySelector('#navList');
-const EXCEL_INFO_EL = document.querySelector("#counter__type");
+const EXCEL_INFO_EL = document.querySelector('#counter__type');
 const PRELOADER_EL = document.querySelector('#preloader');
 
 function createOwners(data) {
@@ -21,20 +21,20 @@ function createOwners(data) {
         excelRowNumber: owner.excelRowNumber,
         counterType: owner.counterType,
         tariffType: owner.tariffType,
-        houseName: owner.houseName
+        houseName: owner.houseName,
     }));
     return res;
-};
+}
 function createExcels(data) {
     const res = data.data.map((excel) => ({
-        id: excel.id,
+        id: `${excel.id}`,
         name: excel.name,
         counterType: excel.counterType,
         tariffType: excel.tariffType,
         houseName: excel.houseName,
     }));
     return res;
-};
+}
 
 const FETCH_RETRY_COUNT = 5;
 function fetchOwners({ flatId }) {
@@ -48,19 +48,19 @@ function fetchOwners({ flatId }) {
         } catch (error) {
             setTimeout(() => {
                 run(resolve, reject);
-            }, 100)
+            }, 100);
         }
     }
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         limit += 1;
         if (limit >= FETCH_RETRY_COUNT) {
-            resolve({ error: 'Too many errors' })
+            resolve({ error: 'Too many errors' });
+        } else {
+            run(resolve, reject);
         }
-        else {
-            run(resolve, reject)
-        }
-    })
-};
+    });
+}
+
 function fetchCounters() {
     let limit = 0;
     const url = 'http://api.parus-smart.site/api/private/gtable_config';
@@ -72,28 +72,27 @@ function fetchCounters() {
         } catch (error) {
             setTimeout(() => {
                 run(resolve, reject);
-            }, 100)
+            }, 100);
         }
     }
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         limit += 1;
         if (limit >= FETCH_RETRY_COUNT) {
-            resolve({ error: 'Too many errors' })
+            resolve({ error: 'Too many errors' });
+        } else {
+            run(resolve, reject);
         }
-        else {
-            run(resolve, reject)
-        }
-    })
-};
+    });
+}
 
 async function initOwnersAsync({ flatId }) {
     const { data, error } = await fetchOwners({ flatId });
     if (data) {
         const owners = createOwners(data);
         ALL_OWNERS = owners;
-    }
-    else {
-        alert(error);
+    } else {
+        // eslint-disable-next-line no-console
+        console.error(error);
     }
 }
 async function initCountersAsync() {
@@ -101,132 +100,127 @@ async function initCountersAsync() {
     if (data) {
         const counters = createExcels(data);
         ALL_EXCELS = counters;
-    }
-    else {
-        alert(error);
+    } else {
+        // eslint-disable-next-line no-console
+        console.error(error);
     }
 }
 
-function getOwnerItemHtml({ id, flatId, fullName, flatSpace, personalNumber, counterNumber, previousValue, currentValue, excelRowNumber, counterType, tariffType, houseName }) {
+function getOwnerItemHtml({ id, flatId, counterNumber, previousValue, currentValue }) {
     let differenceCounter;
     if (currentValue) {
         differenceCounter = Math.floor(currentValue - previousValue);
     } else {
-        differenceCounter = '-'
+        differenceCounter = '-';
     }
-    const ownersItemHtml =
-        `
+    const ownersItemHtml = `
             <div class="swiper-slide">
-                <div class="owner__content">
+                <div class='owner__content ${currentValue ? 'correct' : ''}'>
                     <div class='owner__id'>Квартира №: ${flatId}</div>
                     <article id='owner__counter' class='owner__counter'>
+                        
                         <label for='counter' class='counter__label'>#${counterNumber}</label>
                         </br>
-                        <input onkeyup="oninputchange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
+                        <input onkeyup="onInputChange(this)"  dataid="${flatId}" tabIndex='-1' type="number" name="counter" id="owner__${id}"  class='owner__input' value="${currentValue}" placeholder='${previousValue}' autofocus>
                         </br>
-                        <button dataid="${flatId}" type='button' class='input__button' onclick='onButtonClick(this)'  >OK</button>
+                        <button dataid="${flatId}" type='button' class='input__button' style='display:none;' onclick='onButtonClick(this)'  >OK</button>
                     </article>
  
                     <div class='owner__differenceValue' id='owner__differenceValue'> Різниця: ${differenceCounter} </div>
                 </div>
             </div>
-        `
+        `;
     // <div class='owner__counterNumber'>Номер лічильника: ${counterNumber}</div>
     // <div class='owner__previousValue'> Попередній показ лічильника: ${previousValue} </div>
-    return ownersItemHtml
+    return ownersItemHtml;
 }
-function oninputchange(el) {
-    const prev = parseFloat(el.getAttribute("placeholder"), 10) || 0;
+function onInputChange(el) {
+    const prev = parseFloat(el.getAttribute('placeholder'), 10) || 0;
     const diffEl = el.closest('.owner__content').querySelector('.owner__differenceValue');
-    diffEl.innerHTML = 'Різниця: ' +Math.floor(parseFloat(el.value, 10) - prev);
+    diffEl.innerHTML = `Різниця: ${Math.floor(parseFloat(el.value, 10) - prev)}`;
 }
-function getCountersListHtml({ id, name, counterType, tariffType, houseName, }) {
-    const ownersItemHtml =
-        `
+function getCountersListHtml({ id, name }) {
+    const ownersItemHtml = `
             <li class="nav__item">
                 <a dataid="${id}" href="#" class="nav__link" id="nav__link${id}">
                     <span class="nav__text">${name}</span> 
                 </a>
             </li>
-        `
-    return ownersItemHtml
+        `;
+    return ownersItemHtml;
 }
 function getExcelInfoHtml(activeCounter) {
-    const ownersItemHtml =
-        `
+    const ownersItemHtml = `
             <span class='counter__type-text'>${activeCounter.name}</span>
-        `
-    return ownersItemHtml
+        `;
+    return ownersItemHtml;
 }
 function renderOwners({ owners }) {
-    const ownersHtml = owners.map(owner => {
-        return getOwnerItemHtml(owner);
-    });
+    const ownersHtml = owners.map((owner) => getOwnerItemHtml(owner));
     SWIPER_WRAPPER_EL.innerHTML = ownersHtml.join(' ');
-};
+}
 function renderCountersList({ counters }) {
-    const countersHtml = counters.map(counter => {
-        return getCountersListHtml(counter);
-    });
+    const countersHtml = counters.map((counter) => getCountersListHtml(counter));
     NAV_LIST_EL.innerHTML = countersHtml.join(' ');
-};
-
-
+}
 
 function onButtonClick(target) {
-    const flatId = target.getAttribute('dataid')
+    const flatId = target.getAttribute('dataid');
     const ownerContentEl = target.closest('.owner__content');
-    const currentOwner = ALL_OWNERS.find((own) => own.flatId == flatId);
-    const currentInputEl = ownerContentEl.querySelector(`#owner__${currentOwner.id}`)
-    axios.post(`http://api.parus-smart.site/api/private/gtable/${localStorage.getItem('ACTIVE_EXCEL_ID')}/set_value`, {
-        month: "october",
-        personalNumber: `${currentOwner.personalNumber}`,
-        value: currentInputEl.value,
-        tabName: "Аркуш2",
-    })
-        .then(function (response) {
+    const currentOwner = ALL_OWNERS.find((own) => own.flatId === flatId);
+    const currentInputEl = ownerContentEl.querySelector(`#owner__${currentOwner.id}`);
+    // eslint-disable-next-line no-undef
+    axios
+        .post(`http://api.parus-smart.site/api/private/gtable/${localStorage.getItem('ACTIVE_EXCEL_ID')}/set_value`, {
+            month: 'october',
+            personalNumber: `${currentOwner.personalNumber}`,
+            value: currentInputEl.value,
+            tabName: 'Аркуш1',
+        })
+        .then(() => {
             currentOwner.currentValue = +currentInputEl.value;
             if (currentInputEl.value) {
-                ownerContentEl.classList.remove('error')
-                ownerContentEl.classList.add('correct')
+                ownerContentEl.classList.remove('error');
+                ownerContentEl.classList.add('correct');
             } else {
-                ownerContentEl.classList.remove('error')
-                ownerContentEl.classList.remove('correct')
+                ownerContentEl.classList.remove('error');
+                ownerContentEl.classList.remove('correct');
             }
-            let ownerDifferenceValue = document.querySelector('#owner__differenceValue');
-            ownerDifferenceValue.innerText = `Різниця показів лічильника: ${currentOwner.currentValue - currentOwner.previousValue}`
+            const ownerDifferenceValue = document.querySelector('#owner__differenceValue');
+            ownerDifferenceValue.innerText = `Різниця показів лічильника: ${
+                currentOwner.currentValue - currentOwner.previousValue
+            }`;
 
             setTimeout(() => {
+                // eslint-disable-next-line no-use-before-define
                 SWIPER.slideNext(600);
-            }, [200])
+            }, [200]);
         })
-        .catch(function (error) {
-            ownerContentEl.classList.add('error')
+        .catch((error) => {
+            ownerContentEl.classList.add('error');
+            // eslint-disable-next-line no-console
             console.log(error);
         });
 }
 
-let SWIPER
+let SWIPER;
 async function startAsync() {
-
     await initCountersAsync();
     renderCountersList({ counters: ALL_EXCELS })
     const activeExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
     if (activeExcelId) {
-
-        await loadAndRenderOwnersAndCreateSwiperAsync({ flatId: activeExcelId });
-    }
-    else {
+        // eslint-disable-next-line no-use-before-define
+        await loadAndRenderOwnersAndCreateSwiperAsync({ excelId: activeExcelId });
+    } else {
         NAV_EL.classList.add('visible');
+        PRELOADER_EL.classList.add('preloader-remove');
     }
 
-    document.addEventListener("keyup", (e) => {
+    document.addEventListener('keyup', (e) => {
         if (e.keyCode === 13) {
-            const currentValue = e.target.value;
-            onButtonClick(e.target, e, e.target.id)
+            onButtonClick(e.target, e, e.target.id);
         }
-    })
-
+    });
 }
 startAsync();
 
@@ -234,7 +228,7 @@ const FLAT_NUMBER_INPUT = document.querySelector('#flat__number');
 
 function onFlatNumberInputClick({ target }) {
     const counterValue = target.value;
-    SWIPER.slideTo(counterValue - 1, 800)
+    SWIPER.slideTo(counterValue - 1, 800);
 }
 
 function onHeaderButtonClick({ target }) {
@@ -247,59 +241,57 @@ function onHeaderButtonClick({ target }) {
     }
 }
 
-
 async function handleNavLinkClick({ target }) {
-    let activeNavLinkEl = target.closest('.nav__link');
+    const activeNavLinkEl = target.closest('.nav__link');
     if (activeNavLinkEl) {
         NAV_EL.classList.remove('visible');
-        HEADER_BUTTON_EL.classList.remove('open')
+        HEADER_BUTTON_EL.classList.remove('open');
         // PRELOADER_EL.classList.remove('preloader-hide');
         // PRELOADER_EL.classList.remove('preloader-remove')
         // PRELOADER_EL.classList.add('preloader-show');
         // PRELOADER_EL.classList.add('preloader-hide');
         // setTimeout(() => { PRELOADER_EL.classList.add('preloader-remove') }, 1000)
 
-        const prevExcelId = localStorage.getItem("ACTIVE_EXCEL_ID");
-        const prevLinkEl = document.getElementById(`nav__link${prevExcelId}`)
+        const prevExcelId = localStorage.getItem('ACTIVE_EXCEL_ID');
+        const prevLinkEl = document.getElementById(`nav__link${prevExcelId}`);
         if (prevLinkEl) {
             prevLinkEl.parentNode.classList.remove('active');
         }
 
+        const excelId = activeNavLinkEl.getAttribute('dataid');
+        localStorage.setItem('ACTIVE_EXCEL_ID', excelId);
 
-        const flatId = activeNavLinkEl.getAttribute('dataid')
-        localStorage.setItem('ACTIVE_EXCEL_ID', flatId)
-
-
-        await loadAndRenderOwnersAndCreateSwiperAsync({ flatId });
-
-
+        // eslint-disable-next-line no-use-before-define
+        await loadAndRenderOwnersAndCreateSwiperAsync({ excelId: excelId });
     }
-};
+}
 
-async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
-    PRELOADER_EL.classList.remove('preloader-remove')
-    console.log('render')
-    console.log('initial state', Number(localStorage.getItem("CURRENT_SLIDE")))
-    const activeNavEl = document.getElementById(`nav__link${flatId}`);
+async function loadAndRenderOwnersAndCreateSwiperAsync({ excelId }) {
+    PRELOADER_EL.classList.remove('preloader-remove');
+    console.log('render');
+    console.log('initial state', Number(localStorage.getItem('CURRENT_SLIDE')));
+    const activeNavEl = document.getElementById(`nav__link${excelId}`);
     activeNavEl.parentNode.classList.add('active');
 
-    let activeExcel = ALL_EXCELS.find((excel) => excel.id == flatId)
-    let excelInfoHtml = getExcelInfoHtml(activeExcel);
+    const activeExcel = ALL_EXCELS.find((excel) => excel.id === excelId);
+    const excelInfoHtml = getExcelInfoHtml(activeExcel);
     EXCEL_INFO_EL.innerHTML = excelInfoHtml;
 
-    await initOwnersAsync({ flatId });
-    renderOwners({ owners: ALL_OWNERS })
+    await initOwnersAsync({ flatId: excelId });
+    renderOwners({ owners: ALL_OWNERS });
 
     if (SWIPER) {
-        console.log("destroy")
+        // eslint-disable-next-line no-console
+        console.log('destroy');
         SWIPER.detachEvents();
         SWIPER.destroy(true, true);
-        localStorage.removeItem('CURRENT_SLIDE')
+        localStorage.removeItem('CURRENT_SLIDE');
     }
+    // eslint-disable-next-line no-undef
     SWIPER = new Swiper('.swiper', {
         navigation: {
             nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
+            prevEl: '.swiper-button-prev',
         },
         pagination: {
             el: '.swiper-pagination',
@@ -308,22 +300,20 @@ async function loadAndRenderOwnersAndCreateSwiperAsync({ flatId }) {
         keyboard: {
             enabled: true,
         },
-        initialSlide: localStorage.getItem("CURRENT_SLIDE") ? Number(localStorage.getItem("CURRENT_SLIDE")) : 0,
+        initialSlide: localStorage.getItem('CURRENT_SLIDE') ? Number(localStorage.getItem('CURRENT_SLIDE')) : 0,
         on: {
-            slideChangeTransitionEnd: function (e) {
+            slideChangeTransitionEnd(e) {
                 if (ALL_EXCELS.length && ALL_OWNERS.length) {
-                    localStorage.setItem("CURRENT_SLIDE", e.activeIndex.toString())
+                    localStorage.setItem('CURRENT_SLIDE', e.activeIndex.toString());
                 }
                 const activeSwipe = document.querySelector('.swiper-slide-active');
                 activeSwipe.querySelector('.owner__input').focus();
-            }
-        }
-    })
-    PRELOADER_EL.classList.add('preloader-remove')
+            },
+        },
+    });
+    PRELOADER_EL.classList.add('preloader-remove');
 }
-
 
 FLAT_NUMBER_INPUT.addEventListener('input', onFlatNumberInputClick);
 HEADER_BUTTON_EL.addEventListener('click', onHeaderButtonClick);
-NAV_LIST_EL.addEventListener("click", handleNavLinkClick);
-
+NAV_LIST_EL.addEventListener('click', handleNavLinkClick);
