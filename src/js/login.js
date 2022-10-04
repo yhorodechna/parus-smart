@@ -32,6 +32,6 @@ function renderLoginItems() {
     const loginItemsHtml = getLoginItemsHtml();
     LOGIN_EL.innerHTML = loginItemsHtml;
 }
-renderLoginItems();
+// renderLoginItems();
 
-LOGIN_BTN_EL.addEventListener('click', onLoginBtnClick);
+// LOGIN_BTN_EL.addEventListener('click', onLoginBtnClick);
