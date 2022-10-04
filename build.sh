@@ -10,4 +10,4 @@ docker image rm $image
 docker build -t $image -f Dockerfile .
 docker stop $container
 docker rm $container
-docker run --restart=always --env PORT=443 -d -p $port:443 --name $container $image
+docker run --restart=always --env PORT=80 -d -p $port:80 --name $container $image
